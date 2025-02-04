@@ -1,0 +1,76 @@
+services:
+  pdfgenerator:
+    build: ./PdfGeneratorMicroservice
+    container_name: pdfgenerator
+    ports:
+      - "5000:80"
+    depends_on:
+      - database
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=database;Database=CryptoDataBase;Username=postgres;Password=postgres
+      - REST_API_URL=http://microservice/
+    networks:
+      app-network:
+        aliases:
+          - pdfgenerator
+    restart: always
+
+  restapiservice:
+    build: ./RestApiMicroService
+    container_name: restapi
+    ports:
+      - "5001:80"
+    depends_on:
+      - database
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=database;Database=CryptoDataBase;Username=postgres;Password=postgres
+    networks:
+      app-network:
+        aliases:
+          - restapiservice
+    restart: always
+
+  webmicroservice:
+    build: ./WebMicroService
+    container_name: web
+    ports:
+      - "8080:80"
+    depends_on:
+      - pdfgenerator
+    volumes:
+      - reports-data:/app/reports
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production      
+      - ConnectionStrings__DefaultConnection=Host=database;Port=5432;Database=CryptoDataBase;Username=postgres;Password=postgres;
+    networks:
+      app-network:
+        aliases:
+          - webmicroservice
+    restart: always
+
+  database:
+    image: postgres:15
+    container_name: database
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: CryptoDataBase
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      app-network:
+        aliases:
+          - app-network
+    restart: always
+
+networks:
+  app-network:
+
+volumes:
+  db-data:
+  reports-data:
