@@ -1,18 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace DBModels.Models
-{ 
+namespace RestApiMicroService.Models
+{
     public class User
-    { 
+    {
+        [Key]
         public int Id { get; set; }
-        public string? Name { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public required string Username { get; set; }
+
+        [Required]
+        [MaxLength(200)]
+        public required string PasswordHash { get; set; }
+
+        [Required]
+        [MaxLength(200)]
+        public required string PasswordSalt { get; set; }
+
+        [Required]
+        [MaxLength(100)]
         public required string Email { get; set; }
-        public required string Password { get; set; }
-        public ICollection<Currency>? Currencies{ get; set; }
+
+        public ICollection<Currency> CryptoDatas { get; set; } = [];
 
     }
 }
