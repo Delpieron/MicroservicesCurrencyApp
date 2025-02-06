@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestApiMicroService.Data;
 using System.Net;
@@ -10,6 +11,16 @@ namespace RestApiMicroService
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddRazorPages(options =>
+            {
+                options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+            });
+
+            // Opcjonalnie zmieñ te¿ ustawienia antiforgery (przed Build())
+            builder.Services.Configure<Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions>(options =>
+            {
+                options.SuppressXFrameOptionsHeader = true;
+            });
 
             builder.WebHost.ConfigureKestrel(options =>
             {

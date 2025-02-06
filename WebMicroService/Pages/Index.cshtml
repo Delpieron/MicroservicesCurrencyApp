@@ -1,10 +1,73 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Monitor kryptowalut";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h2>📈 Monitorowanie kryptowalut</h2>
+
+@if (Model.Cryptos != null && Model.Cryptos.Count > 0)
+{
+    <table class="crypto-table">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Cena (USD)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var crypto in Model.Cryptos)
+            {
+                <tr>
+                    <td>@crypto.Symbol</td>
+                    <td class="price">@crypto.Price</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p class="update-time">🔄 Dane pobrane o: <span>@DateTime.Now.ToString("HH:mm:ss")</span></p>
+}
+else
+{
+    <p class="error-message">⚠️ Nie udało się pobrać danych. Spróbuj ponownie później.</p>
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    .crypto-table {
+        width: 50%;
+        margin: auto;
+        border-collapse: collapse;
+    }
+
+        .crypto-table th, .crypto-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .crypto-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+    .price {
+        font-weight: bold;
+        color: #ff9800;
+    }
+
+    .update-time {
+        margin-top: 10px;
+        font-style: italic;
+        color: gray;
+    }
+
+    .error-message {
+        color: red;
+        font-weight: bold;
+    }
+</style>

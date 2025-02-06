@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace WebMicroService
@@ -7,15 +8,17 @@ namespace WebMicroService
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddHttpClient();
+
+            builder.Services.AddRazorPages(options =>
+            {
+                options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+            });
 
             builder.WebHost.ConfigureKestrel(options =>
             {
                 options.Listen(IPAddress.Any, 80);
             });
-
-            builder.Services.AddRazorPages();
-
-            builder.Services.AddHttpClient();
 
             var app = builder.Build();
 
@@ -28,6 +31,11 @@ namespace WebMicroService
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.Use((context, next) =>
+            {
+                context.Request.Headers.Remove("RequestVerificationToken");
+                return next();
+            });
             app.UseAuthorization();
 
             app.MapRazorPages();

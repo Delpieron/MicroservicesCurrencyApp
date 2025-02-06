@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace WebMicroService.Pages
 {
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [IgnoreAntiforgeryToken]
     public class ErrorModel : PageModel
     {
@@ -16,12 +16,12 @@ namespace WebMicroService.Pages
 
         public ErrorModel(ILogger<ErrorModel> logger)
         {
-            _logger = logger;
+            //_logger = logger;
         }
 
         public void OnGet()
         {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            //RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         }
     }
 
